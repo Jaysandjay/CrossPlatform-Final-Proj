@@ -5,13 +5,16 @@ import type { Expense } from "@/types/Expense";
 import React, { useState } from "react";
 import {
   Alert,
+  Platform,
   ScrollView,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
+  View,
 } from "react-native";
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { useDispatch } from "react-redux";
+import { globalStyles, webStyles } from "@/styles/globalStyles";
 
 interface ExpenseFormProps {
   expense?: Expense;
@@ -23,7 +26,8 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, onClose }) => {
 
   const [title, setTitle] = useState(expense?.title || "");
   const [amount, setAmount] = useState(expense?.amount.toString() || "");
-  const [date, setDate] = useState(expense?.date || "");
+  const [date, setDate] = useState<Date>(expense?.date || new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [category, setCategory] = useState<Category>(
     expense?.category || DEFAULT_CATEGORIES.find((c) => c.isDefault) || DEFAULT_CATEGORIES[0]
   );
@@ -32,8 +36,8 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, onClose }) => {
 
   const handleSave = () => {
     console.log("Saved")
-    if (!title.trim() || !amount.trim() || !date.trim() || !category) {
-      Alert.alert("Validation Error", "Please fill in all required fields");
+    if (!title.trim() || !amount.trim() || !date || isNaN(date.getTime()) || !category) {
+      Alert.alert("Validation Error", "Please fill in all required fields with valid values");
       return;
     }
 
@@ -57,35 +61,67 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, onClose }) => {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.label}>Title</Text>
+    <ScrollView style={globalStyles.container}>
+      <Text style={globalStyles.label}>Title</Text>
       <TextInput
-        style={styles.input}
+        style={globalStyles.input}
         value={title}
         onChangeText={setTitle}
         placeholder="Expense title"
       />
 
-      <Text style={styles.label}>Amount</Text>
+      <Text style={globalStyles.label}>Amount</Text>
       <TextInput
-        style={styles.input}
+        style={globalStyles.input}
         value={amount}
         onChangeText={setAmount}
         placeholder="0.00"
         keyboardType="decimal-pad"
       />
 
-      <Text style={styles.label}>Date</Text>
-      <TextInput
-        style={styles.input}
-        value={date}
-        onChangeText={setDate}
-        placeholder="YYYY-MM-DD"
-      />
+      <Text style={globalStyles.label}>Date</Text>
+      {Platform.OS === 'web' ? (
+        <input
+          type="date"
+          value={date.toISOString().split('T')[0]}
+          max={new Date().toISOString().split('T')[0]}
+          onChange={(e) => {
+            const newDate = new Date(e.target.value);
+            if (!isNaN(newDate.getTime())) {
+              setDate(newDate);
+            }
+          }}
+          style={webStyles.dateInput}
+        />
+      ) : (
+        <>
+          <TouchableOpacity
+            style={globalStyles.input}
+            onPress={() => setShowDatePicker(true)}
+          >
+            <Text>{date.toLocaleDateString()}</Text>
+          </TouchableOpacity>
 
-      <Text style={styles.label}>Category</Text>
+          {showDatePicker && (
+            <DateTimePicker
+              value={date}
+              mode="date"
+              display="default"
+              onChange={(event, selectedDate) => {
+                setShowDatePicker(false);
+                if (selectedDate) {
+                  setDate(selectedDate);
+                }
+              }}
+              maximumDate={new Date()}
+            />
+          )}
+        </>
+      )}
+
+      <Text style={globalStyles.label}>Category</Text>
       <TouchableOpacity
-        style={styles.input}
+        style={globalStyles.input}
         onPress={() => setCategoryOpen(!categoryOpen)}
       >
         <Text>{category.name}</Text>
@@ -95,7 +131,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, onClose }) => {
         DEFAULT_CATEGORIES.map((cat) => (
           <TouchableOpacity
             key={cat.id}
-            style={styles.categoryItem}
+            style={globalStyles.categoryItem}
             onPress={() => {
               setCategory(cat);
               setCategoryOpen(false);
@@ -105,49 +141,28 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, onClose }) => {
           </TouchableOpacity>
         ))}
 
-      <Text style={styles.label}>Description (optional)</Text>
+      <Text style={globalStyles.label}>Description (optional)</Text>
       <TextInput
-        style={[styles.input, styles.textArea]}
+        style={[globalStyles.input, globalStyles.textArea]}
         value={description}
         onChangeText={setDescription}
         placeholder="Add a note"
         multiline
       />
 
-      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonText}>
-          {expense ? "Update Expense" : "Add Expense"}
-        </Text>
-      </TouchableOpacity>
+      <View style={globalStyles.buttonRow}>
+        <TouchableOpacity style={globalStyles.buttonCancel} onPress={onClose}>
+          <Text style={globalStyles.buttonTextGray}>Cancel</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={globalStyles.buttonSave} onPress={handleSave}>
+          <Text style={globalStyles.buttonTextPrimary}>
+            {expense ? "Update Expense" : "Add Expense"}
+          </Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: "#fff" },
-  label: { fontSize: 14, fontWeight: "600", marginBottom: 6 },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 16,
-  },
-  textArea: { height: 80 },
-  saveButton: {
-    backgroundColor: "#3b82f6",
-    padding: 14,
-    borderRadius: 8,
-    alignItems: "center",
-    marginTop: 10,
-  },
-  saveButtonText: { color: "#fff", fontWeight: "600" },
-  categoryItem: {
-    padding: 12,
-    backgroundColor: "#eee",
-    marginBottom: 4,
-    borderRadius: 6,
-  },
-});
 
 export default ExpenseForm;

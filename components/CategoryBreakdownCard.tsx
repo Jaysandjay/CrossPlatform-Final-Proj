@@ -11,7 +11,7 @@ const CategoryBreakdownCard: React.FC = () => {
 
   const breakdown: Record<string, number> = {};
   expenses.forEach(exp => {
-    breakdown[exp.category] = (breakdown[exp.category] || 0) + exp.amount;
+    breakdown[exp.category.id] = (breakdown[exp.category.id] || 0) + exp.amount;
   });
 
   return (

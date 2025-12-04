@@ -45,12 +45,12 @@ const ExpenseItem: React.FC<ExpenseItemProps> = ({
         <View style={styles.expenseDetails}>
           <Text style={styles.categoryName}>{expense.category.name}</Text>
           <Text style={styles.description}>{expense.description || "No description"}</Text>
-          <Text style={styles.date}>{new Date(expense.date).toLocaleDateString()}</Text>
+          <Text style={styles.date}>{expense.date.toLocaleDateString()}</Text>
         </View>
 
         {/* Amount */}
         <View style={styles.amountContainer}>
-          <Text style={styles.amount}>{expense.amount.toFixed(2)}</Text>
+          <Text style={styles.amount}>${expense.amount.toFixed(2)}</Text>
         </View>
       </View>
 

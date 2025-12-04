@@ -32,4 +32,4 @@ const styles = StyleSheet.create({
   totalAmount: { fontSize: 36, fontWeight: "bold", color: "#007AFF", marginVertical: 8 },
 });
 
-export default TotalExpensesCard
+export default TotalExpensesCard;

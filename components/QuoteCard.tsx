@@ -1,37 +1,43 @@
-import { updateQuote } from "@/redux/actions/inspirationActions";
-import type { AppDispatch, RootState } from "@/redux/store";
-import { getDailyQuote } from "@/services/quoteService";
+import type { RootState } from "@/redux/store";
+import { fetchRandomQuote } from "@/services/quoteService";
 import type { Quote } from "@/types/Quote";
-import React, { useEffect, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import React, { useCallback, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 const QuoteCard: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const inspiration = useSelector((state: RootState) => state.inspiration);
   const showQuotes = useSelector((state: RootState) => state.settings.showQuotes);
   const [loading, setLoading] = useState(false);
-
-  const quote: Quote | null = inspiration.motivationalQuote;
+  const [error, setError] = useState(false);
+  const [quote, setQuote] = useState<Quote | null>(null);
 
   const fetchQuote = async () => {
     if (!showQuotes) return;
     setLoading(true);
+    setError(false);
     try {
-      const newQuote = await getDailyQuote(inspiration, dispatch);
-      dispatch(updateQuote(newQuote));
+      const newQuote = await fetchRandomQuote();
+      setQuote(newQuote);
     } catch (err) {
       console.error("Error fetching quote:", err);
+      setError(true);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchQuote();
-  }, [showQuotes]);
+  // Fetch quote whenever the parent screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      if (showQuotes) {
+        fetchQuote();
+      }
+    }, [showQuotes])
+  );
 
-  if (!showQuotes) return null;
+  // Don't show the card if setting is off or if there's an error
+  if (!showQuotes || error) return null;
 
   return (
     <View style={styles.card}>

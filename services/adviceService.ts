@@ -1,6 +1,4 @@
-// services/adviceService.ts
-import { updateAdvice } from "@/redux/actions/inspirationActions";
-import type { AppDispatch, RootState } from "@/redux/store";
+// GET GOOD ADVICE
 import type { Advice } from "@/types/Advice";
 
 const BASE_URL = "https://api.adviceslip.com";
@@ -15,39 +13,46 @@ const DEFAULT_ADVICE: Advice[] = [
   { text: "Build an emergency fund. Aim for at least 3-6 months of living expenses.", timestamp: Date.now() },
 ];
 
-// Fetch a random advice from API
+// FETCH A RANDOM ADVICE FROM API (ALWAYS FRESH, NO CACHING)
 export const fetchRandomAdvice = async (): Promise<Advice> => {
   try {
-    const response = await fetch(`${BASE_URL}/advice`);
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    // ADD RANDOM PARAMETER TO PREVENT CACHING AND FORCE NEW ADVICE EACH TIME
+    const randomParam = Math.floor(Math.random() * 10000);
+    const url = `${BASE_URL}/advice?t=${randomParam}`;
+
+    console.log("🔍 Fetching advice from:", url);
+
+    const response = await fetch(url, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    });
+
+    console.log("📡 Advice API Response Status:", response.status);
+
+    if (!response.ok) {
+      console.error("❌ Advice API HTTP Error:", response.status, response.statusText);
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
     const data = await response.json();
+    console.log("✅ Advice fetched successfully");
+
     return { text: data.slip.advice, timestamp: Date.now() };
   } catch (error) {
-    console.error("Advice API Error:", error);
+    console.error("❌ Advice API Error Details:", {
+      message: error instanceof Error ? error.message : "Unknown error",
+      error: error,
+    });
+    // RETURN RANDOM DEFAULT ADVICE ON ERROR
     const random = DEFAULT_ADVICE[Math.floor(Math.random() * DEFAULT_ADVICE.length)];
+    console.log("📝 Using fallback advice:", random.text.substring(0, 50) + "...");
     return random;
   }
 };
 
-// Check if advice cache is stale (>24 hours)
-export const isAdviceCacheStale = (timestamp?: number) => {
-  if (!timestamp) return true;
-  const age = Date.now() - timestamp;
-  return age > 24 * 60 * 60 * 1000; // 24 hours
-};
-
-// Get daily advice with cache check
-export const getDailyAdvice = async (cache: RootState["inspiration"], dispatch: AppDispatch): Promise<Advice> => {
-  if (cache.dailyAdvice && !isAdviceCacheStale(cache.dailyAdvice.timestamp)) {
-    return cache.dailyAdvice;
-  }
-
-  const advice = await fetchRandomAdvice();
-  dispatch(updateAdvice(advice));
-  return advice;
-};
-
-// Get random default advice for fallback
+// GET RANDOM DEFAULT ADVICE FOR FALLBACK
 export const getRandomDefaultAdvice = (): Advice => {
   return DEFAULT_ADVICE[Math.floor(Math.random() * DEFAULT_ADVICE.length)];
 };
