@@ -4,8 +4,19 @@ import type { AppDispatch, RootState } from "@/redux/store";
 import { globalStyles } from "@/styles/globalStyles";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Alert, Button, Text, TextInput, View } from "react-native";
+import { Alert, Button, Platform, Text, TextInput, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+
+// Cross-platform alert function
+const showAlert = (title: string, message: string) => {
+	if (Platform.OS === 'web') {
+		// Use browser alert for web
+		window.alert(`${title}\n\n${message}`);
+	} else {
+		// Use native Alert for mobile
+		Alert.alert(title, message, [{ text: "OK" }]);
+	}
+};
 
 export default function LoginScreen() {
 	const [email, setEmail] = useState("");
@@ -16,7 +27,11 @@ export default function LoginScreen() {
 	const user = useSelector((state: RootState) => state.user.user);
 
 	useEffect(() => {
-		if (user) router.replace("/(tabs)/dashboard"); // redirect if already logged in
+		console.log("👤 User state changed:", user ? "Logged in" : "Not logged in");
+		if (user) {
+			console.log("🎯 Redirecting to dashboard...");
+			router.replace("/(tabs)/dashboard"); // redirect if already logged in
+		}
 	}, [user]);
 
 	const validateEmail = (email: string): boolean => {
@@ -25,41 +40,52 @@ export default function LoginScreen() {
 	};
 
 	const handleLogin = () => {
+		console.log("🔵 Login button clicked!");
+		console.log("📝 Form values:", { name, email, password: "***" });
+
 		// Validate name
 		if (!name || name.trim().length === 0) {
-			Alert.alert("Name Required", "Please enter your name to continue.", [{ text: "OK" }]);
+			console.log("❌ Validation failed: Name required");
+			showAlert("Name Required", "Please enter your name to continue.");
 			return;
 		}
 
 		if (name.trim().length < 2) {
-			Alert.alert("Invalid Name", "Please enter a valid name (at least 2 characters).", [{ text: "OK" }]);
+			console.log("❌ Validation failed: Name too short");
+			showAlert("Invalid Name", "Please enter a valid name (at least 2 characters).");
 			return;
 		}
 
 		// Validate email
 		if (!email || email.trim().length === 0) {
-			Alert.alert("Email Required", "Please enter your email address to continue.", [{ text: "OK" }]);
+			console.log("❌ Validation failed: Email required");
+			showAlert("Email Required", "Please enter your email address to continue.");
 			return;
 		}
 
 		if (!validateEmail(email.trim())) {
-			Alert.alert("Invalid Email", "Please enter a valid email address (e.g., example@email.com).", [{ text: "OK" }]);
+			console.log("❌ Validation failed: Invalid email format");
+			showAlert("Invalid Email", "Please enter a valid email address (e.g., example@email.com).");
 			return;
 		}
 
 		// Validate password
 		if (!password || password.length === 0) {
-			Alert.alert("Password Required", "Please enter your password to continue.", [{ text: "OK" }]);
+			console.log("❌ Validation failed: Password required");
+			showAlert("Password Required", "Please enter your password to continue.");
 			return;
 		}
 
 		if (password.length < 6) {
-			Alert.alert("Password Too Short", "Password must be at least 6 characters long for security.", [{ text: "OK" }]);
+			console.log("❌ Validation failed: Password too short");
+			showAlert("Password Too Short", "Password must be at least 6 characters long for security.");
 			return;
 		}
 
 		// All validations passed
+		console.log("✅ All validations passed! Dispatching loginUser...");
 		dispatch(loginUser({ name: name.trim(), email: email.trim() }));
+		console.log("🚀 loginUser dispatched successfully");
 	};
 
 	return (

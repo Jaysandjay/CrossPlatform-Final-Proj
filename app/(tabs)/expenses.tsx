@@ -1,6 +1,7 @@
 import AdviceCard from "@/components/AdviceCard";
 import ExpenseForm from "@/components/ExpenseForm";
 import ExpenseItem from "@/components/ExpenseItem";
+import { useAuthProtection } from "@/hooks/useAuth";
 import { deleteExpense } from "@/redux/actions/expenseActions";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { globalStyles } from "@/styles/globalStyles";
@@ -10,12 +11,15 @@ import { FlatList, Modal, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
 const ExpensesScreen: React.FC = () => {
+	// ALL HOOKS MUST BE CALLED BEFORE ANY CONDITIONAL RETURNS
+	// Auth protection - redirect to login if not authenticated
+	const { isAuthenticated } = useAuthProtection();
 	const dispatch = useDispatch<AppDispatch>();
 	const expenses = useSelector((state: RootState) => state.expenses);
-
 	const [modalVisible, setModalVisible] = useState(false);
 	const [editingExpense, setEditingExpense] = useState<Expense | undefined>(undefined);
 
+	// Define computed values and functions AFTER hooks but BEFORE early return
 	const sortedExpenses = [...expenses].sort((a, b) => b.date.getTime() - a.date.getTime());
 
 	const handleAdd = () => {
@@ -38,6 +42,9 @@ const ExpensesScreen: React.FC = () => {
 			onDelete={() => handleDelete(item.id)}
 		/>
 	);
+
+	// Early return AFTER all hooks and function definitions
+	if (!isAuthenticated) return null;
 
 	return (
 		<View style={globalStyles.containerGray}>

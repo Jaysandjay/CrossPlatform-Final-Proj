@@ -3,7 +3,10 @@
     "allow": [
       "Bash(find:*)",
       "Bash(npx expo --version)",
-      "Bash(npm start)"
+      "Bash(npm start)",
+      "WebFetch(domain:api.quotable.io)",
+      "WebFetch(domain:api.adviceslip.com)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": []

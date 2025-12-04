@@ -13,13 +13,6 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
-        options={{
-          tabBarButton: () => null,
-          headerShown: true,        
-        }}
-      />
-            <Tabs.Screen
         name="dashboard"
         options={{
           title: "Dashboard",
