@@ -1,5 +1,6 @@
 import type { RootState } from "@/redux/store";
 import { fetchRandomQuote } from "@/services/quoteService";
+import { globalStyles } from "@/styles/globalStyles";
 import type { Quote } from "@/types/Quote";
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useCallback, useState } from "react";
@@ -40,26 +41,24 @@ const QuoteCard: React.FC = () => {
   if (!showQuotes || error) return null;
 
   return (
-    <View style={styles.card}>
-      <Text style={styles.title}>Daily Inspiration</Text>
+    <View style={globalStyles.cardWithShadow}>
+      <Text style={globalStyles.cardTitle}>Daily Inspiration</Text>
       {loading && !quote ? (
         <ActivityIndicator size="small" />
       ) : quote ? (
         <>
-          <Text style={styles.text}>"{quote.text}"</Text>
+          <Text style={globalStyles.cardTextItalic}>"{quote.text}"</Text>
           <Text style={styles.author}>— {quote.author || "Unknown"}</Text>
         </>
       ) : (
-        <Text style={styles.text}>Loading quote...</Text>
+        <Text style={globalStyles.cardTextItalic}>Loading quote...</Text>
       )}
     </View>
   );
 };
 
+// Keep only unique styles
 const styles = StyleSheet.create({
-  card: { padding: 20, backgroundColor: "#fff", borderRadius: 12, marginBottom: 15 },
-  title: { fontSize: 18, fontWeight: "600", marginBottom: 10 },
-  text: { fontSize: 16, fontStyle: "italic", marginBottom: 5 },
   author: { fontSize: 14, textAlign: "right" },
 });
 

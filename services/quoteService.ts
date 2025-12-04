@@ -1,7 +1,9 @@
 // GET GOOD WISDOM / INSPIRATIONAL QUOTES
+import { Platform } from "react-native";
 import type { Quote } from "@/types/Quote";
 
-const BASE_URL = "https://api.quotable.io";
+const BASE_URL = "https://zenquotes.io/api";
+const CORS_PROXY = "https://corsproxy.io/?"; // CORS proxy for web browsers
 
 // DEFAULT QUOTES IN CASE OF API ERROR
 const DEFAULT_QUOTES: Quote[] = [
@@ -12,16 +14,22 @@ const DEFAULT_QUOTES: Quote[] = [
 	{ text: "It's not how much money you make, but how much money you keep.", author: "Robert Kiyosaki", timestamp: Date.now() },
 ];
 
-// FETCH A RANDOM QUOTE FROM QUOTABLE API (ALWAYS FRESH, NO CACHING)
-export const fetchRandomQuote = async (tags = "wisdom|inspirational"): Promise<Quote> => {
+// FETCH A RANDOM QUOTE FROM ZENQUOTES API (ALWAYS FRESH, NO CACHING)
+// NOTE: On web, we use a CORS proxy to bypass browser CORS restrictions
+export const fetchRandomQuote = async (): Promise<Quote> => {
 	try {
 		// ADD RANDOM PARAMETER TO PREVENT CACHING AND FORCE NEW QUOTE EACH TIME
 		const randomParam = Math.floor(Math.random() * 10000);
-		const url = tags ? `${BASE_URL}/random?tags=${tags}&t=${randomParam}` : `${BASE_URL}/random?t=${randomParam}`;
+		const url = `${BASE_URL}/random?t=${randomParam}`;
 
-		console.log("🔍 Fetching quote from:", url);
+		// Use CORS proxy for web, direct URL for native
+		const finalUrl = Platform.OS === 'web'
+			? `${CORS_PROXY}${encodeURIComponent(url)}`
+			: url;
 
-		const response = await fetch(url, {
+		console.log("🔍 Fetching quote from:", finalUrl);
+
+		const response = await fetch(finalUrl, {
 			headers: {
 				'Accept': 'application/json',
 				'Content-Type': 'application/json',
@@ -38,9 +46,12 @@ export const fetchRandomQuote = async (tags = "wisdom|inspirational"): Promise<Q
 		const data = await response.json();
 		console.log("✅ Quote fetched successfully");
 
+		// ZenQuotes returns an array with one object: { q: quote, a: author, h: html }
+		const quoteData = Array.isArray(data) ? data[0] : data;
+
 		return {
-			text: data.content,
-			author: data.author,
+			text: quoteData.q,
+			author: quoteData.a,
 			timestamp: Date.now(),
 		};
 	} catch (error) {

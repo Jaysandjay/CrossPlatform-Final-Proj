@@ -179,6 +179,51 @@ export const globalStyles = StyleSheet.create({
     ...shadows.medium,
   },
 
+  cardWithShadow: {
+    backgroundColor: colors.white,
+    borderRadius: borderRadius.lg,
+    padding: spacing.lg,
+    marginBottom: spacing.base,
+    shadowColor: colors.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+
+  // ===== CARD TEXT ELEMENTS =====
+  cardTitle: {
+    fontSize: typography.fontSizeLG,
+    fontWeight: typography.fontWeightSemiBold,
+    marginBottom: spacing.md,
+    color: colors.gray800,
+  },
+
+  cardSubtitle: {
+    fontSize: typography.fontSizeMD,
+    color: colors.gray600,
+    marginTop: 5,
+  },
+
+  cardText: {
+    fontSize: typography.fontSizeBase,
+    color: colors.gray800,
+    lineHeight: 22,
+  },
+
+  cardTextItalic: {
+    fontSize: typography.fontSizeBase,
+    fontStyle: 'italic',
+    marginBottom: 5,
+  },
+
+  placeholderText: {
+    color: colors.gray600,
+    fontSize: typography.fontSizeMD,
+    textAlign: 'center',
+    paddingVertical: spacing.lg,
+  },
+
   // ===== TEXT INPUTS =====
   input: {
     borderWidth: 1,
@@ -397,6 +442,196 @@ export const globalStyles = StyleSheet.create({
     color: colors.white,
     fontWeight: typography.fontWeightSemiBold,
     fontSize: typography.fontSizeBase,
+  },
+
+  // ===== EMPTY STATE =====
+  emptyState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 60,
+  },
+
+  emptyStateText: {
+    fontSize: typography.fontSizeLG,
+    fontWeight: typography.fontWeightSemiBold,
+    color: colors.gray600,
+    marginTop: spacing.base,
+  },
+
+  emptyStateSubtext: {
+    fontSize: typography.fontSizeMD,
+    color: colors.gray500,
+    marginTop: spacing.sm,
+    textAlign: 'center',
+  },
+
+  // ===== LEGEND / BREAKDOWN ITEMS =====
+  legendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: spacing.md,
+  },
+
+  legendColor: {
+    width: 16,
+    height: 16,
+    borderRadius: borderRadius.base,
+    marginRight: 10,
+  },
+
+  legendInfo: {
+    flex: 1,
+  },
+
+  legendText: {
+    fontSize: typography.fontSizeMD,
+    color: colors.gray800,
+  },
+
+  legendPercentage: {
+    fontSize: typography.fontSizeSM,
+    color: colors.gray600,
+  },
+
+  legendAmount: {
+    fontSize: typography.fontSizeMD,
+    fontWeight: typography.fontWeightSemiBold,
+    color: colors.gray800,
+  },
+
+  // ===== HEADER WITH ICON =====
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: spacing.md,
+  },
+
+  headerTitle: {
+    fontSize: typography.fontSizeLG,
+    fontWeight: typography.fontWeightSemiBold,
+    marginLeft: spacing.sm,
+  },
+
+  // ===== PROGRESS BAR =====
+  progressBarBackground: {
+    height: 24,
+    backgroundColor: colors.gray200,
+    borderRadius: borderRadius.lg,
+    overflow: 'hidden',
+    marginBottom: 10,
+  },
+
+  progressBarFill: {
+    height: '100%',
+    borderRadius: borderRadius.lg,
+  },
+
+  // ===== EXPENSE ITEM SPECIFIC =====
+  expenseItem: {
+    backgroundColor: colors.white,
+    borderRadius: borderRadius.lg,
+    padding: spacing.base,
+    marginBottom: spacing.md,
+    ...shadows.medium,
+  },
+
+  expenseContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+
+  categoryIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: spacing.md,
+  },
+
+  expenseDetails: {
+    flex: 1,
+  },
+
+  categoryName: {
+    fontSize: typography.fontSizeBase,
+    fontWeight: typography.fontWeightSemiBold,
+    marginBottom: 4,
+  },
+
+  description: {
+    fontSize: typography.fontSizeMD,
+    color: colors.gray600,
+    marginBottom: 2,
+  },
+
+  date: {
+    fontSize: typography.fontSizeSM,
+    color: colors.gray500,
+  },
+
+  amountContainer: {
+    alignItems: 'flex-end',
+  },
+
+  amount: {
+    fontSize: typography.fontSizeLG,
+    fontWeight: typography.fontWeightBold,
+    color: colors.secondary,
+  },
+
+  amountLarge: {
+    fontSize: 36,
+    fontWeight: typography.fontWeightBold,
+    color: colors.secondary,
+    marginVertical: spacing.sm,
+  },
+
+  actions: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    borderTopWidth: 1,
+    borderTopColor: colors.borderLight,
+    paddingTop: 10,
+  },
+
+  actionButton: {
+    padding: spacing.sm,
+    marginLeft: spacing.md,
+  },
+
+  // ===== BUDGET SPECIFIC =====
+  progressContainer: {
+    marginTop: 10,
+  },
+
+  budgetInfo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 5,
+  },
+
+  budgetText: {
+    fontSize: typography.fontSizeMD,
+    color: colors.gray800,
+  },
+
+  budgetPercentage: {
+    fontSize: typography.fontSizeBase,
+    fontWeight: typography.fontWeightSemiBold,
+  },
+
+  budgetStatus: {
+    fontSize: typography.fontSizeMD,
+    fontWeight: typography.fontWeightSemiBold,
+    marginBottom: 5,
+  },
+
+  budgetRemaining: {
+    fontSize: typography.fontSizeSM,
+    color: colors.gray600,
   },
 });
 

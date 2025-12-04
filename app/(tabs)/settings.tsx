@@ -6,6 +6,7 @@ import { setBudget } from "@/redux/actions/settingsActions";
 import { logoutUser } from "@/redux/actions/userActions";
 import { RESET_SETTINGS } from "@/redux/actionTypes/settingsTypes";
 import type { AppDispatch, RootState } from "@/redux/store";
+import { globalStyles } from "@/styles/globalStyles";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { Alert, ScrollView, StyleSheet, TextInput } from "react-native";
@@ -46,7 +47,7 @@ export default function SettingsScreen() {
       {/* Budget Section */}
       <SettingsSection title="Budget">
         <TextInput
-          style={styles.input}
+          style={globalStyles.input}
           placeholder={`${settings.budget}`}
           value={budgetInput}
           keyboardType="numeric"
@@ -81,16 +82,8 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: "gray",
+    backgroundColor: "#f0f0f0",
     padding: 20,
     paddingBottom: 40,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 10,
-    padding: 12,
-    fontSize: 16,
-    marginBottom: 12,
   },
 });

@@ -1,7 +1,9 @@
 // GET GOOD ADVICE
+import { Platform } from "react-native";
 import type { Advice } from "@/types/Advice";
 
 const BASE_URL = "https://api.adviceslip.com";
+const CORS_PROXY = "https://corsproxy.io/?"; // CORS proxy for web browsers
 
 const DEFAULT_ADVICE: Advice[] = [
   { text: "Track every expense, no matter how small. Small leaks sink great ships.", timestamp: Date.now() },
@@ -14,15 +16,21 @@ const DEFAULT_ADVICE: Advice[] = [
 ];
 
 // FETCH A RANDOM ADVICE FROM API (ALWAYS FRESH, NO CACHING)
+// NOTE: On web, we use a CORS proxy to bypass browser CORS restrictions
 export const fetchRandomAdvice = async (): Promise<Advice> => {
   try {
     // ADD RANDOM PARAMETER TO PREVENT CACHING AND FORCE NEW ADVICE EACH TIME
     const randomParam = Math.floor(Math.random() * 10000);
     const url = `${BASE_URL}/advice?t=${randomParam}`;
 
-    console.log("🔍 Fetching advice from:", url);
+    // Use CORS proxy for web, direct URL for native
+    const finalUrl = Platform.OS === 'web'
+      ? `${CORS_PROXY}${encodeURIComponent(url)}`
+      : url;
 
-    const response = await fetch(url, {
+    console.log("🔍 Fetching advice from:", finalUrl);
+
+    const response = await fetch(finalUrl, {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',

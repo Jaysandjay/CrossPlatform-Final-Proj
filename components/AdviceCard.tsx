@@ -1,10 +1,11 @@
 import type { RootState } from "@/redux/store";
 import { fetchRandomAdvice } from "@/services/adviceService";
+import { globalStyles } from "@/styles/globalStyles";
 import type { Advice } from "@/types/Advice";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useCallback, useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 
 const AdviceCard: React.FC = () => {
@@ -40,14 +41,14 @@ const AdviceCard: React.FC = () => {
 	if (!showAdvice || hasError) return null;
 
 	return (
-		<View style={styles.card}>
-			<View style={styles.header}>
+		<View style={globalStyles.cardWithShadow}>
+			<View style={globalStyles.headerRow}>
 				<MaterialIcons
 					name="lightbulb"
 					size={24}
 					color="#F5A623"
 				/>
-				<Text style={styles.title}>Financial Advice</Text>
+				<Text style={globalStyles.headerTitle}>Financial Advice</Text>
 			</View>
 
 			{isLoading && !advice ? (
@@ -57,65 +58,17 @@ const AdviceCard: React.FC = () => {
 				/>
 			) : advice ? (
 				<>
-					<Text style={styles.text}>{advice.text}</Text>
+					<Text style={globalStyles.cardText}>{advice.text}</Text>
 					<TouchableOpacity
-						style={styles.refreshButton}
+						style={globalStyles.actionButton}
 						onPress={fetchAdvice}
 					></TouchableOpacity>
 				</>
 			) : (
-				<Text style={styles.placeholder}>Loading advice...</Text>
+				<Text style={globalStyles.placeholderText}>Loading advice...</Text>
 			)}
 		</View>
 	);
 };
-
-const styles = StyleSheet.create({
-	card: {
-		backgroundColor: "#FFFFFF",
-		borderRadius: 12,
-		padding: 20,
-		marginBottom: 15,
-		shadowColor: "#000000",
-		shadowOpacity: 0.1,
-		shadowRadius: 4,
-		shadowOffset: { width: 0, height: 2 },
-		elevation: 3,
-	},
-	header: {
-		flexDirection: "row",
-		alignItems: "center",
-		marginBottom: 12,
-	},
-	title: {
-		fontSize: 18,
-		fontWeight: "600",
-		marginLeft: 8,
-	},
-	text: {
-		fontSize: 16,
-		color: "#333",
-		marginBottom: 12,
-		lineHeight: 22,
-	},
-	refreshButton: {
-		flexDirection: "row",
-		alignItems: "center",
-		justifyContent: "center",
-		paddingVertical: 8,
-	},
-	refreshText: {
-		fontSize: 14,
-		color: "#4ECDC4",
-		marginLeft: 5,
-		fontWeight: "500",
-	},
-	placeholder: {
-		color: "#888",
-		fontSize: 14,
-		textAlign: "center",
-		paddingVertical: 20,
-	},
-});
 
 export default AdviceCard;

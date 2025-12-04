@@ -1,9 +1,10 @@
 // components/ExpenseItem.tsx
+import { globalStyles } from "@/styles/globalStyles";
 import type { Category } from "@/types/Category";
 import type { Expense } from "@/types/Expense";
 import { MaterialIcons } from "@expo/vector-icons";
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 
 interface ExpenseItemProps {
   expense?: Expense;
@@ -21,10 +22,10 @@ const ExpenseItem: React.FC<ExpenseItemProps> = ({
 }) => {
   if (isEmpty) {
     return (
-      <View style={styles.emptyState}>
+      <View style={globalStyles.emptyState}>
         <MaterialIcons name="receipt-long" size={64} color="#B0B0B0" />
-        <Text style={styles.emptyText}>No expenses yet</Text>
-        <Text style={styles.emptySubtext}>
+        <Text style={globalStyles.emptyStateText}>No expenses yet</Text>
+        <Text style={globalStyles.emptyStateSubtext}>
           Tap the + button to add your first expense
         </Text>
       </View>
@@ -34,35 +35,35 @@ const ExpenseItem: React.FC<ExpenseItemProps> = ({
   if (!expense) return null;
 
   return (
-    <View style={styles.expenseItem}>
-      <View style={styles.expenseContent}>
+    <View style={globalStyles.expenseItem}>
+      <View style={globalStyles.expenseContent}>
         {/* Category Icon */}
-        <View style={[styles.categoryIcon, { backgroundColor: expense.category.color }]}>
+        <View style={[globalStyles.categoryIcon, { backgroundColor: expense.category.color }]}>
           <MaterialIcons name={(expense.category.icon || "category")as keyof typeof MaterialIcons.glyphMap} size={24} color="#fff" />
         </View>
 
         {/* Expense Details */}
-        <View style={styles.expenseDetails}>
-          <Text style={styles.categoryName}>{expense.category.name}</Text>
-          <Text style={styles.description}>{expense.description || "No description"}</Text>
-          <Text style={styles.date}>{expense.date.toLocaleDateString()}</Text>
+        <View style={globalStyles.expenseDetails}>
+          <Text style={globalStyles.categoryName}>{expense.category.name}</Text>
+          <Text style={globalStyles.description}>{expense.description || "No description"}</Text>
+          <Text style={globalStyles.date}>{expense.date.toLocaleDateString()}</Text>
         </View>
 
         {/* Amount */}
-        <View style={styles.amountContainer}>
-          <Text style={styles.amount}>${expense.amount.toFixed(2)}</Text>
+        <View style={globalStyles.amountContainer}>
+          <Text style={globalStyles.amount}>${expense.amount.toFixed(2)}</Text>
         </View>
       </View>
 
       {/* Action Buttons */}
-      <View style={styles.actions}>
+      <View style={globalStyles.actions}>
         {onEdit && (
-          <TouchableOpacity style={styles.actionButton} onPress={() => onEdit(expense)}>
+          <TouchableOpacity style={globalStyles.actionButton} onPress={() => onEdit(expense)}>
             <MaterialIcons name="edit" size={20} color="#007AFF" />
           </TouchableOpacity>
         )}
         {onDelete && (
-          <TouchableOpacity style={styles.actionButton} onPress={() => onDelete(expense.id)}>
+          <TouchableOpacity style={globalStyles.actionButton} onPress={() => onDelete(expense.id)}>
             <MaterialIcons name="delete" size={20} color="#FF3B30" />
           </TouchableOpacity>
         )}
@@ -70,56 +71,5 @@ const ExpenseItem: React.FC<ExpenseItemProps> = ({
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  expenseItem: {
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 15,
-    marginBottom: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  expenseContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  categoryIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 12,
-  },
-  expenseDetails: { flex: 1 },
-  categoryName: { fontSize: 16, fontWeight: "600", marginBottom: 4 },
-  description: { fontSize: 14, color: "#666", marginBottom: 2 },
-  date: { fontSize: 12, color: "#999" },
-  amountContainer: { alignItems: "flex-end" },
-  amount: { fontSize: 18, fontWeight: "bold", color: "#007AFF" },
-  actions: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    borderTopWidth: 1,
-    borderTopColor: "#E0E0E0",
-    paddingTop: 10,
-  },
-  actionButton: { padding: 8, marginLeft: 12 },
-
-  // Empty state
-  emptyState: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingVertical: 60,
-  },
-  emptyText: { fontSize: 18, fontWeight: "600", color: "#666", marginTop: 16 },
-  emptySubtext: { fontSize: 14, color: "#999", marginTop: 8, textAlign: "center" },
-});
 
 export default ExpenseItem;
