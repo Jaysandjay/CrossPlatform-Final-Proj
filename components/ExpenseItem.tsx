@@ -15,7 +15,6 @@ interface ExpenseItemProps {
 
 const ExpenseItem: React.FC<ExpenseItemProps> = ({
   expense,
-  category,
   onEdit,
   onDelete,
   isEmpty = false,
@@ -32,19 +31,19 @@ const ExpenseItem: React.FC<ExpenseItemProps> = ({
     );
   }
 
-  if (!expense || !category) return null;
+  if (!expense) return null;
 
   return (
     <View style={styles.expenseItem}>
       <View style={styles.expenseContent}>
         {/* Category Icon */}
-        <View style={[styles.categoryIcon, { backgroundColor: category.color }]}>
-          <MaterialIcons name={(category.icon || "category")as keyof typeof MaterialIcons.glyphMap} size={24} color="#fff" />
+        <View style={[styles.categoryIcon, { backgroundColor: expense.category.color }]}>
+          <MaterialIcons name={(expense.category.icon || "category")as keyof typeof MaterialIcons.glyphMap} size={24} color="#fff" />
         </View>
 
         {/* Expense Details */}
         <View style={styles.expenseDetails}>
-          <Text style={styles.categoryName}>{category.name}</Text>
+          <Text style={styles.categoryName}>{expense.category.name}</Text>
           <Text style={styles.description}>{expense.description || "No description"}</Text>
           <Text style={styles.date}>{new Date(expense.date).toLocaleDateString()}</Text>
         </View>

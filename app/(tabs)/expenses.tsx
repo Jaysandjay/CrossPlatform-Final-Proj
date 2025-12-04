@@ -11,7 +11,6 @@ import { useDispatch, useSelector } from "react-redux";
 const ExpensesScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const expenses = useSelector((state: RootState) => state.expenses);
-  const categories = useSelector((state: RootState) => state.categories);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [editingExpense, setEditingExpense] = useState<Expense | undefined>(undefined);
@@ -32,13 +31,10 @@ const ExpensesScreen: React.FC = () => {
 
   const handleDelete = (id: string) => dispatch(deleteExpense(id));
 
-  const getCategory = (categoryId: string) =>
-    categories.find((cat) => cat.id === categoryId) || categories[0];
-
   const renderItem = ({ item }: { item: Expense }) => (
     <ExpenseItem
       expense={item}
-      category={getCategory(item.category)}
+      category={item.category}
       onEdit={() => handleEdit(item)}
       onDelete={() => handleDelete(item.id)}
     />

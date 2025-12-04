@@ -1,14 +1,21 @@
 import { addExpense, updateExpense } from "@/redux/actions/expenseActions";
 import type { AppDispatch } from "@/redux/store";
+import { Category, DEFAULT_CATEGORIES } from "@/types/Category";
 import type { Expense } from "@/types/Expense";
 import React, { useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import { useDispatch } from "react-redux";
 
-
 interface ExpenseFormProps {
-  expense?: Expense; // optional, present if editing
-  onClose?: () => void; // optional, to close modal
+  expense?: Expense;
+  onClose: () => void;
 }
 
 const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, onClose }) => {
@@ -17,11 +24,15 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, onClose }) => {
   const [title, setTitle] = useState(expense?.title || "");
   const [amount, setAmount] = useState(expense?.amount.toString() || "");
   const [date, setDate] = useState(expense?.date || "");
-  const [category, setCategory] = useState(expense?.category || "");
+  const [category, setCategory] = useState<Category>(
+    expense?.category || DEFAULT_CATEGORIES.find((c) => c.isDefault) || DEFAULT_CATEGORIES[0]
+  );
   const [description, setDescription] = useState(expense?.description || "");
+  const [categoryOpen, setCategoryOpen] = useState(false);
 
   const handleSave = () => {
-    if (!title.trim() || !amount.trim() || !date.trim() || !category.trim()) {
+    console.log("Saved")
+    if (!title.trim() || !amount.trim() || !date.trim() || !category) {
       Alert.alert("Validation Error", "Please fill in all required fields");
       return;
     }
@@ -31,21 +42,18 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, onClose }) => {
       title: title.trim(),
       amount: parseFloat(amount),
       date,
-      category: category.trim(),
+      category,
       description: description.trim(),
     };
 
     if (expense) {
-      // Edit mode
       const { id, ...updates } = newExpense;
       dispatch(updateExpense(id, updates));
     } else {
-      // Add mode
       dispatch(addExpense(newExpense));
     }
 
-    Alert.alert("Success", `Expense ${expense ? "updated" : "added"} successfully`);
-    onClose?.();
+    onClose();
   };
 
   return (
@@ -76,12 +84,26 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, onClose }) => {
       />
 
       <Text style={styles.label}>Category</Text>
-      <TextInput
+      <TouchableOpacity
         style={styles.input}
-        value={category}
-        onChangeText={setCategory}
-        placeholder="Category name"
-      />
+        onPress={() => setCategoryOpen(!categoryOpen)}
+      >
+        <Text>{category.name}</Text>
+      </TouchableOpacity>
+
+      {categoryOpen &&
+        DEFAULT_CATEGORIES.map((cat) => (
+          <TouchableOpacity
+            key={cat.id}
+            style={styles.categoryItem}
+            onPress={() => {
+              setCategory(cat);
+              setCategoryOpen(false);
+            }}
+          >
+            <Text>{cat.name}</Text>
+          </TouchableOpacity>
+        ))}
 
       <Text style={styles.label}>Description (optional)</Text>
       <TextInput
@@ -93,7 +115,9 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, onClose }) => {
       />
 
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonText}>{expense ? "Update Expense" : "Add Expense"}</Text>
+        <Text style={styles.saveButtonText}>
+          {expense ? "Update Expense" : "Add Expense"}
+        </Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -101,26 +125,29 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, onClose }) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, backgroundColor: "#fff" },
-  label: { fontSize: 14, fontWeight: "600", marginBottom: 6, color: "#000" },
+  label: { fontSize: 14, fontWeight: "600", marginBottom: 6 },
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    padding: 12,
     marginBottom: 16,
-    fontSize: 16,
-    backgroundColor: "#f9f9f9",
   },
   textArea: { height: 80 },
   saveButton: {
     backgroundColor: "#3b82f6",
-    paddingVertical: 14,
+    padding: 14,
     borderRadius: 8,
     alignItems: "center",
     marginTop: 10,
   },
-  saveButtonText: { color: "#fff", fontSize: 16, fontWeight: "600" },
+  saveButtonText: { color: "#fff", fontWeight: "600" },
+  categoryItem: {
+    padding: 12,
+    backgroundColor: "#eee",
+    marginBottom: 4,
+    borderRadius: 6,
+  },
 });
 
 export default ExpenseForm;
