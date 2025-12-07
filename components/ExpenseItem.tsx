@@ -1,10 +1,13 @@
 // components/ExpenseItem.tsx
+import type { RootState } from "@/redux/store";
 import { globalStyles } from "@/styles/globalStyles";
 import type { Category } from "@/types/Category";
 import type { Expense } from "@/types/Expense";
+import { formatCurrency } from "@/utils/currencyUtils";
 import { MaterialIcons } from "@expo/vector-icons";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import { useSelector } from "react-redux";
 
 interface ExpenseItemProps {
   expense?: Expense;
@@ -20,6 +23,9 @@ const ExpenseItem: React.FC<ExpenseItemProps> = ({
   onDelete,
   isEmpty = false,
 }) => {
+  const currency = useSelector((state: RootState) => state.settings.currency);
+  const exchangeRates = useSelector((state: RootState) => state.settings.exchangeRates);
+
   if (isEmpty) {
     return (
       <View style={globalStyles.emptyState}>
@@ -51,7 +57,9 @@ const ExpenseItem: React.FC<ExpenseItemProps> = ({
 
         {/* Amount */}
         <View style={globalStyles.amountContainer}>
-          <Text style={globalStyles.amount}>${expense.amount.toFixed(2)}</Text>
+          <Text style={globalStyles.amount}>
+            {formatCurrency(expense.amount, currency, exchangeRates?.rates)}
+          </Text>
         </View>
       </View>
 

@@ -6,7 +6,8 @@
       "Bash(npm start)",
       "WebFetch(domain:api.quotable.io)",
       "WebFetch(domain:api.adviceslip.com)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []

@@ -1,16 +1,18 @@
+import CurrencyDropdown from "@/components/CurrencyDropdown";
 import SettingsButton from "@/components/SettingsButton";
 import SettingsSection from "@/components/SettingsSection";
 import SettingSwitchRow from "@/components/SettingsSwitchRow";
 import { useAuthProtection } from "@/hooks/useAuth";
 import { toggleShowAdvice, toggleShowQuote } from "@/redux/actions/inspirationActions";
-import { setBudget } from "@/redux/actions/settingsActions";
+import { setBudget, setCurrency, updateExchangeRates } from "@/redux/actions/settingsActions";
 import { logoutUser } from "@/redux/actions/userActions";
 import { RESET_SETTINGS } from "@/redux/actionTypes/settingsTypes";
 import type { AppDispatch, RootState } from "@/redux/store";
+import { fetchExchangeRates, shouldRefreshRates } from "@/services/currencyService";
 import { globalStyles } from "@/styles/globalStyles";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
-import { Alert, Platform, ScrollView, StyleSheet, TextInput } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Alert, Platform, ScrollView, StyleSheet, Text, TextInput } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
 // Cross-platform alert function
@@ -31,8 +33,22 @@ export default function SettingsScreen() {
   const settings = useSelector((state: RootState) => state.settings);
   const showQuote = settings.showQuotes;
   const showAdvice = settings.showAdvice;
+  const currency = settings.currency;
+  const exchangeRates = settings.exchangeRates;
 
   const [budgetInput, setBudgetInput] = useState(String(settings.budget));
+
+  // Refresh exchange rates once per day if needed
+  useEffect(() => {
+    const refreshRates = async () => {
+      if (shouldRefreshRates(exchangeRates?.lastUpdated)) {
+        console.log("🔄 Refreshing exchange rates (24h check)...");
+        const newRates = await fetchExchangeRates();
+        dispatch(updateExchangeRates(newRates));
+      }
+    };
+    refreshRates();
+  }, []);
 
   // Define all functions AFTER all hooks but BEFORE early return
   const handleLogout = () => {
@@ -77,6 +93,15 @@ export default function SettingsScreen() {
     );
   };
 
+  const handleCurrencyChange = async (newCurrency: string) => {
+    // Fetch fresh rates when currency changes
+    console.log("💱 Currency changed, fetching fresh rates...");
+    const newRates = await fetchExchangeRates();
+    dispatch(setCurrency(newCurrency));
+    dispatch(updateExchangeRates(newRates));
+    showAlert("Currency Updated", `Display currency changed to ${newCurrency}`);
+  };
+
   // Early return AFTER all hooks and function definitions
   if (!isAuthenticated) return null;
 
@@ -93,6 +118,22 @@ export default function SettingsScreen() {
           onChangeText={setBudgetInput}
         />
         <SettingsButton label="Save Budget" onPress={handleSaveBudget} color="blue" />
+      </SettingsSection>
+
+      {/* Currency Section */}
+      <SettingsSection title="Display Currency">
+        <CurrencyDropdown
+          selectedCurrency={currency}
+          onSelect={handleCurrencyChange}
+        />
+        <Text style={styles.currencyNote}>
+          Note: All expenses are stored in CAD. This only affects display.
+        </Text>
+        {exchangeRates?.lastUpdated && (
+          <Text style={styles.rateUpdateText}>
+            Rates updated: {new Date(exchangeRates.lastUpdated).toLocaleDateString()}
+          </Text>
+        )}
       </SettingsSection>
 
       {/* Inspiration Display Section */}
@@ -124,5 +165,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#f0f0f0",
     padding: 20,
     paddingBottom: 40,
+  },
+  currencyNote: {
+    fontSize: 12,
+    color: "#666",
+    marginTop: 10,
+    fontStyle: "italic",
+  },
+  rateUpdateText: {
+    fontSize: 11,
+    color: "#999",
+    marginTop: 5,
   },
 });

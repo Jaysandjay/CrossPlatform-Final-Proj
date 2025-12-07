@@ -1,7 +1,8 @@
 import { addExpense, updateExpense } from "@/redux/actions/expenseActions";
-import type { AppDispatch } from "@/redux/store";
+import type { AppDispatch, RootState } from "@/redux/store";
 import { Category, DEFAULT_CATEGORIES } from "@/types/Category";
 import type { Expense } from "@/types/Expense";
+import { convertFromCAD, convertToCAD, getCurrencyByCode } from "@/utils/currencyUtils";
 import React, { useState } from "react";
 import {
   Alert,
@@ -13,7 +14,7 @@ import {
   View,
 } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { globalStyles, webStyles } from "@/styles/globalStyles";
 
 interface ExpenseFormProps {
@@ -23,9 +24,16 @@ interface ExpenseFormProps {
 
 const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, onClose }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const currency = useSelector((state: RootState) => state.settings.currency);
+  const exchangeRates = useSelector((state: RootState) => state.settings.exchangeRates);
+  const currencySymbol = getCurrencyByCode(currency).symbol;
 
   const [title, setTitle] = useState(expense?.title || "");
-  const [amount, setAmount] = useState(expense?.amount.toString() || "");
+  const [amount, setAmount] = useState(
+    expense
+      ? convertFromCAD(expense.amount, currency, exchangeRates?.rates).toFixed(2)
+      : ""
+  );
   const [date, setDate] = useState<Date>(expense?.date || new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [category, setCategory] = useState<Category>(
@@ -41,10 +49,14 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, onClose }) => {
       return;
     }
 
+    // Convert entered amount from display currency to CAD for storage
+    const amountInDisplayCurrency = parseFloat(amount);
+    const amountInCAD = convertToCAD(amountInDisplayCurrency, currency, exchangeRates?.rates);
+
     const newExpense: Expense = {
       id: expense?.id || Date.now().toString(),
       title: title.trim(),
-      amount: parseFloat(amount),
+      amount: amountInCAD,
       date,
       category,
       description: description.trim(),
@@ -75,7 +87,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, onClose }) => {
         style={globalStyles.input}
         value={amount}
         onChangeText={setAmount}
-        placeholder="0.00"
+        placeholder={`0.00 ${currencySymbol}`}
         keyboardType="decimal-pad"
       />
 

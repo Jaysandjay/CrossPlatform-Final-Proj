@@ -1,5 +1,6 @@
 import type { RootState } from "@/redux/store";
 import { globalStyles } from "@/styles/globalStyles";
+import { formatCurrency } from "@/utils/currencyUtils";
 import React from "react";
 import { Text, View } from "react-native";
 import { useSelector } from "react-redux";
@@ -7,6 +8,8 @@ import { useSelector } from "react-redux";
 const CategoryBreakdownCard: React.FC = () => {
   const expenses = useSelector((state: RootState) => state.expenses);
   const categories = useSelector((state: RootState) => state.categories);
+  const currency = useSelector((state: RootState) => state.settings.currency);
+  const exchangeRates = useSelector((state: RootState) => state.settings.exchangeRates);
 
   const totalExpenses = expenses.reduce((sum, exp) => sum + exp.amount, 0);
 
@@ -32,7 +35,9 @@ const CategoryBreakdownCard: React.FC = () => {
                   <Text style={globalStyles.legendText}>{category?.name || key}</Text>
                   <Text style={globalStyles.legendPercentage}>{percentage}%</Text>
                 </View>
-                <Text style={globalStyles.legendAmount}>${value.toFixed(2)}</Text>
+                <Text style={globalStyles.legendAmount}>
+                  {formatCurrency(value, currency, exchangeRates?.rates)}
+                </Text>
               </View>
             );
           })

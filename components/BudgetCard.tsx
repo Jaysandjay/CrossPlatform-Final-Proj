@@ -1,5 +1,6 @@
 import type { RootState } from "@/redux/store";
 import { globalStyles } from "@/styles/globalStyles";
+import { formatCurrency } from "@/utils/currencyUtils";
 import React from "react";
 import { Text, View } from "react-native";
 import { useSelector } from "react-redux";
@@ -9,6 +10,8 @@ const BudgetCard: React.FC = () => {
     state.expenses.reduce((sum, exp) => sum + exp.amount, 0)
   );
   const budget = useSelector((state: RootState) => state.settings.budget);
+  const currency = useSelector((state: RootState) => state.settings.currency);
+  const exchangeRates = useSelector((state: RootState) => state.settings.exchangeRates);
 
   const budgetProgress = (totalExpenses / budget) * 100;
   const budgetRemaining = budget - totalExpenses;
@@ -41,14 +44,16 @@ const BudgetCard: React.FC = () => {
         </View>
         <View style={globalStyles.budgetInfo}>
           <Text style={globalStyles.budgetText}>
-            ${totalExpenses.toFixed(2)} of ${budget.toFixed(2)}
+            {formatCurrency(totalExpenses, currency, exchangeRates?.rates)} of {formatCurrency(budget, currency, exchangeRates?.rates)}
           </Text>
           <Text style={[globalStyles.budgetPercentage, { color: getBudgetStatusColor() }]}>
             {budgetProgress.toFixed(0)}%
           </Text>
         </View>
         <Text style={[globalStyles.budgetStatus, { color: getBudgetStatusColor() }]}>{getBudgetStatusText()}</Text>
-        <Text style={globalStyles.budgetRemaining}>${Math.max(budgetRemaining, 0).toFixed(2)} remaining</Text>
+        <Text style={globalStyles.budgetRemaining}>
+          {formatCurrency(Math.max(budgetRemaining, 0), currency, exchangeRates?.rates)} remaining
+        </Text>
       </View>
     </View>
   );
