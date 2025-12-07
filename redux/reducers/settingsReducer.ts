@@ -1,4 +1,5 @@
 import type { Settings } from "@/types/Settings";
+import { TOGGLE_SHOW_ADVICE, TOGGLE_SHOW_QUOTE } from "../actionTypes/inspirationTypes";
 import { RESET_SETTINGS, SET_BUDGET, SettingsActionTypes, UPDATE_SETTINGS } from "../actionTypes/settingsTypes";
 
 // Default settings
@@ -12,7 +13,7 @@ const initialState: Settings = defaultSettings;
 
 export default function settingsReducer(
   state: Settings = initialState,
-  action: SettingsActionTypes
+  action: SettingsActionTypes | { type: typeof TOGGLE_SHOW_QUOTE } | { type: typeof TOGGLE_SHOW_ADVICE }
 ): Settings {
   switch (action.type) {
     case UPDATE_SETTINGS: {
@@ -30,6 +31,12 @@ export default function settingsReducer(
 
     case SET_BUDGET:
       return { ...state, budget: action.payload };
+
+    case TOGGLE_SHOW_QUOTE:
+      return { ...state, showQuotes: !state.showQuotes };
+
+    case TOGGLE_SHOW_ADVICE:
+      return { ...state, showAdvice: !state.showAdvice };
 
     default:
       return state;

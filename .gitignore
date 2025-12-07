@@ -43,3 +43,5 @@ app-example
 /android
 .claude/*
 .claude/settings.local.json
+TODO.txt
+NUL

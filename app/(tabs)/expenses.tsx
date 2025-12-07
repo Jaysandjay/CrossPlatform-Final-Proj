@@ -48,13 +48,14 @@ const ExpensesScreen: React.FC = () => {
 
 	return (
 		<View style={globalStyles.containerGray}>
+			<AdviceCard />
+
 			<FlatList
 				data={sortedExpenses}
 				renderItem={renderItem}
 				keyExtractor={(item) => item.id}
 				contentContainerStyle={globalStyles.listContent}
 				ListEmptyComponent={<ExpenseItem isEmpty />}
-				ListFooterComponent={<AdviceCard />}
 			/>
 
 			{/* Add Expense Button */}

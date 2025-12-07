@@ -21,7 +21,6 @@ const showAlert = (title: string, message: string) => {
 export default function LoginScreen() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [name, setName] = useState("");
 	const dispatch = useDispatch<AppDispatch>();
 	const router = useRouter();
 	const user = useSelector((state: RootState) => state.user.user);
@@ -41,20 +40,7 @@ export default function LoginScreen() {
 
 	const handleLogin = () => {
 		console.log("🔵 Login button clicked!");
-		console.log("📝 Form values:", { name, email, password: "***" });
-
-		// Validate name
-		if (!name || name.trim().length === 0) {
-			console.log("❌ Validation failed: Name required");
-			showAlert("Name Required", "Please enter your name to continue.");
-			return;
-		}
-
-		if (name.trim().length < 2) {
-			console.log("❌ Validation failed: Name too short");
-			showAlert("Invalid Name", "Please enter a valid name (at least 2 characters).");
-			return;
-		}
+		console.log("📝 Form values:", { email, password: "***" });
 
 		// Validate email
 		if (!email || email.trim().length === 0) {
@@ -84,7 +70,7 @@ export default function LoginScreen() {
 
 		// All validations passed
 		console.log("✅ All validations passed! Dispatching loginUser...");
-		dispatch(loginUser({ name: name.trim(), email: email.trim() }));
+		dispatch(loginUser({ email: email.trim() }));
 		console.log("🚀 loginUser dispatched successfully");
 	};
 
@@ -93,14 +79,6 @@ export default function LoginScreen() {
 			{/* App Title */}
 			<Text style={globalStyles.title}>SmartSpend</Text>
 
-			<TextInput
-				placeholder="Full Name"
-				value={name}
-				onChangeText={setName}
-				style={globalStyles.inputGray}
-				autoCapitalize="words"
-				autoCorrect={false}
-			/>
 			<TextInput
 				placeholder="Email Address"
 				value={email}

@@ -48,7 +48,7 @@ const AdviceCard: React.FC = () => {
 					size={24}
 					color="#F5A623"
 				/>
-				<Text style={globalStyles.headerTitle}>Financial Advice</Text>
+				<Text style={globalStyles.headerTitle}>Advice</Text>
 			</View>
 
 			{isLoading && !advice ? (

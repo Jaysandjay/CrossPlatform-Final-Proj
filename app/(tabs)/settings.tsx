@@ -53,6 +53,28 @@ export default function SettingsScreen() {
   const handleResetSettings = () => {
     dispatch({ type: RESET_SETTINGS });
     setBudgetInput(String(1000)); // reset local input
+    showAlert(
+      "Settings Reset",
+      "All settings have been reset to default values:\n• Budget: $1000\n• Inspiration Quote: Enabled\n• Daily Advice: Enabled"
+    );
+  };
+
+  const handleToggleQuote = () => {
+    dispatch(toggleShowQuote());
+    const newValue = !showQuote;
+    showAlert(
+      "Inspiration Quote",
+      newValue ? "Inspiration quotes enabled" : "Inspiration quotes disabled"
+    );
+  };
+
+  const handleToggleAdvice = () => {
+    dispatch(toggleShowAdvice());
+    const newValue = !showAdvice;
+    showAlert(
+      "Daily Advice",
+      newValue ? "Daily advice enabled" : "Daily advice disabled"
+    );
   };
 
   // Early return AFTER all hooks and function definitions
@@ -79,13 +101,13 @@ export default function SettingsScreen() {
           icon="format-quote"
           label="Show Inspiration Quote"
           value={showQuote}
-          onToggle={() => dispatch(toggleShowQuote())}
+          onToggle={handleToggleQuote}
         />
         <SettingSwitchRow
           icon="lightbulb"
           label="Show Daily Advice"
           value={showAdvice}
-          onToggle={() => dispatch(toggleShowAdvice())}
+          onToggle={handleToggleAdvice}
         />
       </SettingsSection>
 
