@@ -10,7 +10,7 @@ const BudgetCard: React.FC = () => {
     state.expenses.reduce((sum, exp) => sum + exp.amount, 0)
   );
   const budget = useSelector((state: RootState) => state.settings.budget);
-  const currency = useSelector((state: RootState) => state.settings.currency);
+  const currency = useSelector((state: RootState) => state.settings.currency) || 'CAD';
   const exchangeRates = useSelector((state: RootState) => state.settings.exchangeRates);
 
   const budgetProgress = (totalExpenses / budget) * 100;

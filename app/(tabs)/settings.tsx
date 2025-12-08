@@ -33,7 +33,7 @@ export default function SettingsScreen() {
   const settings = useSelector((state: RootState) => state.settings);
   const showQuote = settings.showQuotes;
   const showAdvice = settings.showAdvice;
-  const currency = settings.currency;
+  const currency = settings.currency || 'CAD';  // Fallback for old persisted state
   const exchangeRates = settings.exchangeRates;
 
   const [budgetInput, setBudgetInput] = useState(String(settings.budget));

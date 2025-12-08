@@ -23,7 +23,7 @@ const ExpenseItem: React.FC<ExpenseItemProps> = ({
   onDelete,
   isEmpty = false,
 }) => {
-  const currency = useSelector((state: RootState) => state.settings.currency);
+  const currency = useSelector((state: RootState) => state.settings.currency) || 'CAD';
   const exchangeRates = useSelector((state: RootState) => state.settings.exchangeRates);
 
   if (isEmpty) {

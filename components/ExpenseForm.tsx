@@ -24,7 +24,7 @@ interface ExpenseFormProps {
 
 const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, onClose }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const currency = useSelector((state: RootState) => state.settings.currency);
+  const currency = useSelector((state: RootState) => state.settings.currency) || 'CAD';
   const exchangeRates = useSelector((state: RootState) => state.settings.exchangeRates);
   const currencySymbol = getCurrencyByCode(currency).symbol;
 

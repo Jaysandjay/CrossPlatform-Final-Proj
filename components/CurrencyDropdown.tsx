@@ -11,7 +11,7 @@ interface CurrencyDropdownProps {
 }
 
 const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
-  selectedCurrency,
+  selectedCurrency = 'CAD',  // Default parameter for safety
   onSelect
 }) => {
   const [isOpen, setIsOpen] = useState(false);

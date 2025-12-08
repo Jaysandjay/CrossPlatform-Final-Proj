@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 const CategoryBreakdownCard: React.FC = () => {
   const expenses = useSelector((state: RootState) => state.expenses);
   const categories = useSelector((state: RootState) => state.categories);
-  const currency = useSelector((state: RootState) => state.settings.currency);
+  const currency = useSelector((state: RootState) => state.settings.currency) || 'CAD';
   const exchangeRates = useSelector((state: RootState) => state.settings.exchangeRates);
 
   const totalExpenses = expenses.reduce((sum, exp) => sum + exp.amount, 0);
