@@ -9,7 +9,7 @@ import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 
 const AdviceCard: React.FC = () => {
-	const showAdvice = useSelector((state: RootState) => state.settings.showAdvice);
+	const showAdvice = useSelector((state: RootState) => state.settings?.showAdvice ?? true);
 	const [isLoading, setIsLoading] = useState(false);
 	const [hasError, setHasError] = useState(false);
 	const [advice, setAdvice] = useState<Advice | null>(null);
@@ -50,7 +50,6 @@ const AdviceCard: React.FC = () => {
 				/>
 				<Text style={globalStyles.headerTitle}>Advice</Text>
 			</View>
-
 			{isLoading && !advice ? (
 				<ActivityIndicator
 					size="small"
@@ -58,11 +57,17 @@ const AdviceCard: React.FC = () => {
 				/>
 			) : advice ? (
 				<>
-					<Text style={globalStyles.cardText}>{advice.text}</Text>
+					<Text style={globalStyles.cardText}>{String(advice.text || "")}</Text>
 					<TouchableOpacity
 						style={globalStyles.actionButton}
 						onPress={fetchAdvice}
-					></TouchableOpacity>
+					>
+						<MaterialIcons
+							name="refresh"
+							size={20}
+							color="#4ECDC4"
+						/>
+					</TouchableOpacity>
 				</>
 			) : (
 				<Text style={globalStyles.placeholderText}>Loading advice...</Text>

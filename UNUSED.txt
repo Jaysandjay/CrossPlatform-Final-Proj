@@ -1,0 +1,41 @@
+UNUSED FILES IN PROJECT
+=======================
+
+These files are not imported or used anywhere in the active codebase.
+They appear to be leftover template files or components that were replaced.
+
+COMPONENTS (Not imported anywhere):
+------------------------------------
+components/ExpenseList.tsx
+components/SettingInput.tsx
+components/SettingsRow.tsx
+
+UI COMPONENTS (Template files, not used):
+------------------------------------------
+components/ui/collapsible.tsx
+components/ui/icon-symbol.tsx
+components/ui/icon-symbol.ios.tsx
+
+HOOKS (Template files, not used):
+----------------------------------
+hooks/use-color-scheme.ts
+hooks/use-color-scheme.web.ts
+hooks/use-theme-color.ts
+
+CONSTANTS (Template files, not used):
+--------------------------------------
+constants/theme.ts
+
+REDUX ACTIONS (Not dispatched anywhere):
+-----------------------------------------
+redux/actions/categoryActions.ts
+
+NOTE: categoryReducer, categoryTypes are still used in the Redux store setup,
+but categoryActions exports (addCategory, updateCategory, deleteCategory)
+are never dispatched. Categories use DEFAULT_CATEGORIES from types/Category.ts.
+
+RECOMMENDATION:
+---------------
+These files can be safely deleted if they're not needed for future features.
+The project uses default categories defined in types/Category.ts and doesn't
+support adding/editing/deleting categories at runtime.

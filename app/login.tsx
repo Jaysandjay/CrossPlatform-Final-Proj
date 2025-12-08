@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 // Cross-platform alert function
 const showAlert = (title: string, message: string) => {
-	if (Platform.OS === 'web') {
+	if (Platform.OS === "web") {
 		// Use browser alert for web
 		window.alert(`${title}\n\n${message}`);
 	} else {
@@ -28,7 +28,7 @@ export default function LoginScreen() {
 	useEffect(() => {
 		console.log("👤 User state changed:", user ? "Logged in" : "Not logged in");
 		if (user) {
-			console.log("🎯 Redirecting to dashboard...");
+			console.log("Redirecting to dashboard...");
 			router.replace("/(tabs)/dashboard"); // redirect if already logged in
 		}
 	}, [user]);
@@ -39,45 +39,46 @@ export default function LoginScreen() {
 	};
 
 	const handleLogin = () => {
-		console.log("🔵 Login button clicked!");
-		console.log("📝 Form values:", { email, password: "***" });
+		console.log("Login button clicked!");
+		console.log("Form values:", { email, password: "***" });
 
 		// Validate email
 		if (!email || email.trim().length === 0) {
-			console.log("❌ Validation failed: Email required");
+			console.log("Validation failed: Email required");
 			showAlert("Email Required", "Please enter your email address to continue.");
 			return;
 		}
 
 		if (!validateEmail(email.trim())) {
-			console.log("❌ Validation failed: Invalid email format");
+			console.log("Validation failed: Invalid email format");
 			showAlert("Invalid Email", "Please enter a valid email address (e.g., example@email.com).");
 			return;
 		}
 
 		// Validate password
 		if (!password || password.length === 0) {
-			console.log("❌ Validation failed: Password required");
+			console.log("Validation failed: Password required");
 			showAlert("Password Required", "Please enter your password to continue.");
 			return;
 		}
 
 		if (password.length < 6) {
-			console.log("❌ Validation failed: Password too short");
+			console.log("Validation failed: Password too short");
 			showAlert("Password Too Short", "Password must be at least 6 characters long for security.");
 			return;
 		}
 
 		// All validations passed
-		console.log("✅ All validations passed! Dispatching loginUser...");
+		console.log("All validations passed! Dispatching loginUser...");
 		dispatch(loginUser({ email: email.trim() }));
-		console.log("🚀 loginUser dispatched successfully");
+		console.log("loginUser dispatched successfully");
 	};
 
 	return (
 		<View style={globalStyles.containerCentered}>
 			{/* App Title */}
-			<Text style={globalStyles.title}>SmartSpend</Text>
+			<Text style={globalStyles.title}>SmartSpend App</Text>
+			<Text style={globalStyles.subtitle}>If you're going to Spend it - SmartSpend it!</Text>
 
 			<TextInput
 				placeholder="Email Address"

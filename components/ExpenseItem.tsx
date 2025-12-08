@@ -23,8 +23,8 @@ const ExpenseItem: React.FC<ExpenseItemProps> = ({
   onDelete,
   isEmpty = false,
 }) => {
-  const currency = useSelector((state: RootState) => state.settings.currency) || 'CAD';
-  const exchangeRates = useSelector((state: RootState) => state.settings.exchangeRates);
+  const currency = useSelector((state: RootState) => state.settings?.currency || 'CAD');
+  const exchangeRates = useSelector((state: RootState) => state.settings?.exchangeRates);
 
   if (isEmpty) {
     return (
@@ -50,15 +50,15 @@ const ExpenseItem: React.FC<ExpenseItemProps> = ({
 
         {/* Expense Details */}
         <View style={globalStyles.expenseDetails}>
-          <Text style={globalStyles.categoryName}>{expense.category.name}</Text>
-          <Text style={globalStyles.description}>{expense.description || "No description"}</Text>
-          <Text style={globalStyles.date}>{expense.date.toLocaleDateString()}</Text>
+          <Text style={globalStyles.categoryName}>{String(expense.category?.name || "Uncategorized")}</Text>
+          <Text style={globalStyles.description}>{String(expense.description || "No description")}</Text>
+          <Text style={globalStyles.date}>{expense.date ? expense.date.toLocaleDateString() : "No date"}</Text>
         </View>
 
         {/* Amount */}
         <View style={globalStyles.amountContainer}>
           <Text style={globalStyles.amount}>
-            {formatCurrency(expense.amount, currency, exchangeRates?.rates)}
+            {formatCurrency(expense.amount || 0, currency, exchangeRates?.rates)}
           </Text>
         </View>
       </View>

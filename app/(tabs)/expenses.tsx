@@ -49,7 +49,6 @@ const ExpensesScreen: React.FC = () => {
 	return (
 		<View style={globalStyles.containerGray}>
 			<AdviceCard />
-
 			<FlatList
 				data={sortedExpenses}
 				renderItem={renderItem}
@@ -57,7 +56,6 @@ const ExpensesScreen: React.FC = () => {
 				contentContainerStyle={globalStyles.listContent}
 				ListEmptyComponent={<ExpenseItem isEmpty />}
 			/>
-
 			{/* Add Expense Button */}
 			<TouchableOpacity
 				style={globalStyles.fab}
@@ -65,7 +63,6 @@ const ExpensesScreen: React.FC = () => {
 			>
 				<Text style={globalStyles.fabText}>+ Add Expense</Text>
 			</TouchableOpacity>
-
 			{/* Expense Form Modal */}
 			<Modal
 				visible={modalVisible}
