@@ -436,7 +436,7 @@ export const globalStyles = StyleSheet.create({
 	fab: {
 		position: "absolute",
 		bottom: 20,
-		right: 20,
+		left: 20,
 		backgroundColor: colors.primary,
 		paddingHorizontal: spacing.lg,
 		paddingVertical: 14,
@@ -561,6 +561,9 @@ export const globalStyles = StyleSheet.create({
 		flex: 1,
 	},
 
+	expenseList: {
+		marginBottom: 10,
+	},
 	categoryName: {
 		fontSize: typography.fontSizeBase,
 		fontWeight: typography.fontWeightSemiBold,

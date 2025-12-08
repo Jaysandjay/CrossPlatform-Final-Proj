@@ -50,6 +50,7 @@ const ExpensesScreen: React.FC = () => {
 		<View style={globalStyles.containerGray}>
 			<AdviceCard />
 			<FlatList
+				style={globalStyles.expenselist}
 				data={sortedExpenses}
 				renderItem={renderItem}
 				keyExtractor={(item) => item.id}
